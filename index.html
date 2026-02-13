@@ -3,56 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KAMIL_MARUSZAK.SYS - Computer Graphics & 3D Vision</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <title>Kamil Maruszak - Research</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         :root {
-            --bg-black: #000000;
-            --fg-white: #ffffff;
-            --border-gray: #808080;
-            --light-gray: #cccccc;
-            --dark-gray: #333333;
-            --ascii-shadow: rgba(255, 255, 255, 0.1);
+            --black: #000;
+            --white: #fff;
+            --gray: #808080;
+            --light-gray: #ccc;
+            --dark-gray: #333;
         }
-
-        @keyframes blink {
-            0%, 49% { opacity: 1; }
-            50%, 100% { opacity: 0; }
-        }
-
-        @keyframes scanline {
-            0% { transform: translateY(-100%); }
-            100% { transform: translateY(100vh); }
-        }
-
-        @keyframes textGlitch {
-            0% { clip-path: inset(40% 0 61% 0); }
-            20% { clip-path: inset(92% 0 1% 0); }
-            40% { clip-path: inset(43% 0 1% 0); }
-            60% { clip-path: inset(25% 0 58% 0); }
-            80% { clip-path: inset(54% 0 7% 0); }
-            100% { clip-path: inset(58% 0 43% 0); }
-        }
-
+        
         body {
-            font-family: 'VT323', monospace;
-            background: var(--bg-black);
-            color: var(--fg-white);
-            overflow-x: hidden;
-            line-height: 1.4;
-            position: relative;
-            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><rect width="16" height="16" fill="white"/><rect x="1" y="1" width="14" height="14" fill="black"/></svg>'), auto;
+            font-family: 'IBM Plex Mono', monospace;
+            background: var(--black);
+            color: var(--white);
+            line-height: 1.6;
         }
-
-        /* Scanline Effect */
+        
+        /* Scanline */
         body::before {
             content: '';
             position: fixed;
@@ -60,36 +31,12 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: repeating-linear-gradient(
-                0deg,
-                rgba(0, 0, 0, 0.15),
-                rgba(0, 0, 0, 0.15) 1px,
-                transparent 1px,
-                transparent 2px
-            );
+            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.15), rgba(0,0,0,0.15) 1px, transparent 1px, transparent 2px);
             pointer-events: none;
             z-index: 9999;
         }
-
-        body::after {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(
-                to bottom,
-                transparent,
-                rgba(255, 255, 255, 0.1),
-                transparent
-            );
-            pointer-events: none;
-            z-index: 9998;
-            animation: scanline 8s linear infinite;
-        }
-
-        /* Three.js Canvas Background */
+        
+        /* Three.js Canvas */
         #three-canvas {
             position: fixed;
             top: 0;
@@ -97,1231 +44,272 @@
             width: 100%;
             height: 100%;
             z-index: 0;
-            opacity: 0.4;
+            opacity: 0.15;
         }
-
-        .screen-container {
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 0 20px;
+        
+        /* Navigation */
+        .top-nav {
+            background: var(--black);
+            border-bottom: 3px solid var(--white);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            padding: 0;
+        }
+        
+        .site-title {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 12px;
+            padding: 20px 30px;
+            border-right: 2px solid var(--gray);
+            text-decoration: none;
+            color: var(--white);
+            white-space: nowrap;
+        }
+        
+        .site-title:hover {
+            background: var(--white);
+            color: var(--black);
+        }
+        
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            flex: 1;
+        }
+        
+        .nav-menu a {
+            display: block;
+            padding: 20px 25px;
+            color: var(--white);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            border-right: 2px solid var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            background: var(--white);
+            color: var(--black);
+        }
+        
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 30px;
             position: relative;
             z-index: 1;
         }
-
-        /* ASCII Border */
-        .ascii-border {
-            border: 2px solid var(--fg-white);
-            position: relative;
-        }
-
-        .ascii-border::before {
-            content: '┌─────────────────────────────────────────────────────────┐';
-            position: absolute;
-            top: -12px;
-            left: 0;
-            right: 0;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 14px;
-            background: var(--bg-black);
-            overflow: hidden;
-            white-space: nowrap;
-        }
-
-        .ascii-border::after {
-            content: '└─────────────────────────────────────────────────────────┘';
-            position: absolute;
-            bottom: -12px;
-            left: 0;
-            right: 0;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 14px;
-            background: var(--bg-black);
-            overflow: hidden;
-            white-space: nowrap;
-        }
-
-        /* Terminal Header */
-        .terminal-header {
-            background: var(--bg-black);
-            border: 3px solid var(--fg-white);
-            padding: 30px 20px 20px 20px;
-            margin-bottom: 20px;
-            box-shadow: 
-                0 0 0 1px var(--dark-gray),
-                0 0 20px rgba(255, 255, 255, 0.1);
-            position: relative;
-        }
-
-        .terminal-header::before {
-            content: '█';
-            position: absolute;
-            top: 10px;
-            right: 20px;
-            font-family: 'Press Start 2P', monospace;
-            font-size: 12px;
-            animation: blink 1s infinite;
-        }
-
-        .ascii-logo {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 11px;
-            line-height: 1.1;
-            color: var(--fg-white);
-            text-shadow: 
-                2px 2px 0 var(--dark-gray),
-                -1px -1px 0 var(--dark-gray);
-            margin-bottom: 20px;
-            white-space: pre;
-            overflow-x: auto;
-            text-align: center;
-        }
-
-        .terminal-title {
-            font-family: 'Press Start 2P', monospace;
-            font-size: 14px;
-            color: var(--fg-white);
-            margin-bottom: 10px;
-            text-align: center;
-            letter-spacing: 2px;
-        }
-
-        .terminal-subtitle {
-            font-size: 22px;
-            color: var(--light-gray);
-            margin-bottom: 10px;
-            text-align: center;
-        }
-
-        .status-bar {
-            font-size: 18px;
-            color: var(--fg-white);
-            margin-top: 15px;
-            text-align: center;
-            padding: 10px;
-            border: 1px dashed var(--border-gray);
-        }
-
-        /* Window System */
-        .window {
-            background: var(--bg-black);
-            border: 3px double var(--fg-white);
-            margin-bottom: 20px;
-            box-shadow: 5px 5px 0 var(--dark-gray);
-        }
-
-        .window-titlebar {
-            background: var(--fg-white);
-            color: var(--bg-black);
-            padding: 8px 12px;
-            font-family: 'Press Start 2P', monospace;
-            font-size: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 3px solid var(--fg-white);
-        }
-
-        .window-buttons {
-            display: flex;
-            gap: 8px;
-        }
-
-        .window-btn {
-            width: 18px;
-            height: 18px;
-            background: var(--bg-black);
-            border: 2px solid var(--bg-black);
-            color: var(--fg-white);
-            font-size: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-family: 'Press Start 2P', monospace;
-        }
-
-        .window-btn:hover {
-            background: var(--dark-gray);
-        }
-
-        .window-content {
-            padding: 25px;
-            background: var(--bg-black);
-            color: var(--fg-white);
-            font-size: 18px;
-            border: 2px solid var(--dark-gray);
-            margin: 3px;
-        }
-
-        .window-content h2 {
-            font-family: 'Press Start 2P', monospace;
-            font-size: 13px;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--fg-white);
-            display: inline-block;
-            min-width: 200px;
-        }
-
-        .window-content h3 {
-            font-family: 'Press Start 2P', monospace;
-            font-size: 11px;
-            margin: 20px 0 12px 0;
-            color: var(--light-gray);
-        }
-
-        .window-content p {
-            margin-bottom: 15px;
-            line-height: 1.6;
-        }
-
-        .window-content a {
-            color: var(--fg-white);
-            text-decoration: none;
-            border-bottom: 1px solid var(--fg-white);
-            padding-bottom: 2px;
-        }
-
-        .window-content a:hover {
-            background: var(--fg-white);
-            color: var(--bg-black);
-            padding: 2px 4px;
-            margin: -2px -4px;
-        }
-
-        /* Navigation */
-        .nav-window {
-            margin-bottom: 20px;
-        }
-
-        .nav-menu {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0;
-            background: var(--bg-black);
-            padding: 3px;
-        }
-
-        .nav-item {
-            flex: 1;
-            min-width: 120px;
-            padding: 12px 20px;
-            text-align: center;
-            color: var(--fg-white);
-            background: var(--bg-black);
-            text-decoration: none;
-            font-family: 'Press Start 2P', monospace;
-            font-size: 9px;
-            border: 2px solid var(--fg-white);
-            margin: 2px;
-            cursor: pointer;
-            transition: all 0.1s;
-        }
-
-        .nav-item:hover,
-        .nav-item.active {
-            background: var(--fg-white);
-            color: var(--bg-black);
-            box-shadow: inset 3px 3px 0 var(--dark-gray);
-        }
-
-        /* Profile Section */
-        .profile-grid {
-            display: grid;
-            grid-template-columns: 220px 1fr;
-            gap: 30px;
+        
+        /* Sections */
+        .section {
+            border: 3px solid var(--white);
+            padding: 30px;
             margin-bottom: 30px;
-        }
-
-        .ascii-avatar {
-            width: 220px;
-            height: 220px;
-            border: 4px solid var(--fg-white);
-            background: 
-                repeating-linear-gradient(
-                    45deg,
-                    var(--bg-black),
-                    var(--bg-black) 10px,
-                    var(--dark-gray) 10px,
-                    var(--dark-gray) 20px
-                );
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 100px;
-            box-shadow: 
-                inset 0 0 0 2px var(--dark-gray),
-                5px 5px 0 var(--dark-gray);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .ascii-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            filter: contrast(1.3) grayscale(1);
-            mix-blend-mode: lighten;
-        }
-
-        .ascii-avatar::before {
-            content: '[ PROFILE.IMG ]';
-            position: absolute;
-            top: 5px;
-            left: 5px;
-            font-family: 'Press Start 2P', monospace;
-            font-size: 8px;
-            background: var(--bg-black);
-            padding: 2px 5px;
-            border: 1px solid var(--fg-white);
-        }
-
-        .info-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 16px;
-        }
-
-        .info-table td {
-            padding: 8px 12px;
-            border: 1px solid var(--border-gray);
-        }
-
-        .info-table td:first-child {
-            width: 140px;
-            font-family: 'Press Start 2P', monospace;
-            font-size: 9px;
-            background: var(--dark-gray);
-            text-align: right;
-        }
-
-        /* Lists */
-        .ascii-list {
-            list-style: none;
-            padding-left: 0;
-        }
-
-        .ascii-list li {
-            margin-bottom: 10px;
-            position: relative;
-            padding-left: 30px;
-        }
-
-        .ascii-list li::before {
-            content: '►';
-            position: absolute;
-            left: 0;
-            font-family: 'Press Start 2P', monospace;
-            font-size: 10px;
-        }
-
-        /* Cards */
-        .card {
-            background: var(--bg-black);
-            border: 2px solid var(--fg-white);
-            padding: 20px;
-            margin-bottom: 20px;
-            position: relative;
+            background: var(--black);
             box-shadow: 4px 4px 0 var(--dark-gray);
         }
-
-        .card::before {
-            content: '▪';
-            position: absolute;
-            top: -10px;
-            left: 15px;
-            background: var(--bg-black);
-            padding: 0 8px;
-            font-size: 16px;
-        }
-
-        .card-header {
-            border-bottom: 2px dashed var(--border-gray);
-            padding-bottom: 12px;
-            margin-bottom: 15px;
-        }
-
-        .card-title {
+        
+        .section h1 {
             font-family: 'Press Start 2P', monospace;
-            font-size: 10px;
-            margin-bottom: 8px;
-            letter-spacing: 1px;
+            font-size: 20px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--white);
         }
-
-        .card-subtitle {
-            font-size: 16px;
-            color: var(--light-gray);
-        }
-
-        /* Skills Grid */
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .skill-box {
-            border: 2px solid var(--fg-white);
-            padding: 15px;
-            background: 
-                linear-gradient(45deg, var(--bg-black) 25%, transparent 25%),
-                linear-gradient(-45deg, var(--bg-black) 25%, transparent 25%),
-                linear-gradient(45deg, transparent 75%, var(--bg-black) 75%),
-                linear-gradient(-45deg, transparent 75%, var(--bg-black) 75%);
-            background-size: 4px 4px;
-            background-position: 0 0, 0 2px, 2px -2px, -2px 0px;
-        }
-
-        .skill-box h4 {
+        
+        .section h2 {
             font-family: 'Press Start 2P', monospace;
-            font-size: 9px;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid var(--border-gray);
-        }
-
-        .skill-tag {
-            display: inline-block;
-            border: 1px solid var(--fg-white);
-            padding: 4px 10px;
-            margin: 4px 4px 4px 0;
-            font-family: 'Share Tech Mono', monospace;
             font-size: 14px;
-            background: var(--bg-black);
+            margin: 25px 0 15px 0;
         }
-
-        .skill-tag:hover {
-            background: var(--fg-white);
-            color: var(--bg-black);
+        
+        .section p {
+            margin-bottom: 15px;
+            font-size: 15px;
         }
-
-        /* Contact Grid */
-        .contact-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .contact-box {
-            border: 2px solid var(--fg-white);
-            padding: 15px;
-            background: var(--bg-black);
-            text-align: center;
-        }
-
-        .contact-label {
-            font-family: 'Press Start 2P', monospace;
-            font-size: 8px;
-            margin-bottom: 8px;
-            color: var(--light-gray);
-        }
-
-        .contact-value {
-            font-size: 16px;
-        }
-
-        .contact-value a {
-            color: var(--fg-white);
+        
+        .section a {
+            color: var(--white);
+            border-bottom: 1px solid var(--white);
             text-decoration: none;
         }
-
-        .contact-value a:hover {
-            text-decoration: underline;
+        
+        .section a:hover {
+            background: var(--white);
+            color: var(--black);
         }
-
-        /* ASCII Decorations */
-        .ascii-divider {
-            text-align: center;
-            margin: 30px 0;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 12px;
-            color: var(--border-gray);
+        
+        /* Blog Post */
+        .blog-post {
+            border: 2px solid var(--white);
+            padding: 25px;
+            margin-bottom: 25px;
+            background: var(--black);
         }
-
-        /* News Ticker */
-        .ticker-window {
-            background: var(--bg-black);
-            border: 3px solid var(--fg-white);
-            padding: 12px;
-            margin-bottom: 20px;
-            overflow: hidden;
-            box-shadow: 3px 3px 0 var(--dark-gray);
-        }
-
-        .ticker-label {
+        
+        .blog-meta {
+            font-size: 11px;
+            color: var(--gray);
+            margin-bottom: 15px;
             font-family: 'Press Start 2P', monospace;
-            font-size: 9px;
-            display: inline-block;
-            margin-right: 20px;
-            border: 1px solid var(--fg-white);
-            padding: 4px 8px;
         }
-
-        .ticker-content {
-            display: inline-block;
-            white-space: nowrap;
-            animation: ticker 40s linear infinite;
+        
+        .blog-title {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 15px;
+            margin-bottom: 15px;
         }
-
-        @keyframes ticker {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-
-        /* Footer */
-        .footer {
-            border: 3px double var(--fg-white);
-            padding: 20px;
-            margin-top: 40px;
-            text-align: center;
-            background: var(--bg-black);
-            box-shadow: 3px 3px 0 var(--dark-gray);
-        }
-
-        .footer-ascii {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 10px;
-            line-height: 1.2;
-            margin-top: 10px;
-            color: var(--border-gray);
-        }
-
-        /* Boot Screen */
-        .boot-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--bg-black);
-            color: var(--fg-white);
-            z-index: 10000;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 16px;
-            transition: opacity 0.5s;
-        }
-
-        .boot-screen.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .boot-ascii {
-            font-size: 8px;
-            line-height: 1.1;
-            margin-bottom: 30px;
-            white-space: pre;
-            text-align: center;
-        }
-
-        .boot-text {
-            text-align: left;
-            line-height: 1.6;
-        }
-
-        .boot-text .cursor {
-            animation: blink 1s infinite;
-        }
-
-        .progress-bar {
-            width: 400px;
-            height: 30px;
-            border: 2px solid var(--fg-white);
-            margin-top: 20px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: 
-                repeating-linear-gradient(
-                    45deg,
-                    var(--fg-white),
-                    var(--fg-white) 10px,
-                    var(--bg-black) 10px,
-                    var(--bg-black) 20px
-                );
-            width: 0%;
-            animation: loading 3s ease-in-out forwards;
-        }
-
-        @keyframes loading {
-            0% { width: 0%; }
-            100% { width: 100%; }
-        }
-
-        /* Responsive */
+        
+        .page { display: none; }
+        .page.active { display: block; }
+        
         @media (max-width: 768px) {
-            .profile-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .ascii-avatar {
-                margin: 0 auto;
-            }
-
-            .ascii-logo {
-                font-size: 7px;
-            }
-
-            .nav-item {
-                font-size: 7px;
-                padding: 10px;
-            }
-
-            .progress-bar {
-                width: 90%;
-            }
-        }
-
-        /* 3D Interaction Hint */
-        .interaction-hint {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: var(--bg-black);
-            border: 2px solid var(--fg-white);
-            padding: 15px;
-            font-family: 'Press Start 2P', monospace;
-            font-size: 8px;
-            z-index: 1000;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
+            .nav-container { flex-direction: column; }
+            .site-title { border-right: none; border-bottom: 2px solid var(--gray); width: 100%; text-align: center; }
+            .nav-menu { flex-direction: column; width: 100%; }
+            .nav-menu a { border-right: none; border-bottom: 2px solid var(--gray); }
         }
     </style>
 </head>
 <body>
-    <!-- Boot Screen -->
-    <div class="boot-screen" id="bootScreen">
-        <div class="boot-ascii">
-███╗   ███╗ █████╗ ██████╗ ██╗   ██╗███████╗███████╗ █████╗ ██╗  ██╗
-████╗ ████║██╔══██╗██╔══██╗██║   ██║██╔════╝╚══███╔╝██╔══██╗██║ ██╔╝
-██╔████╔██║███████║██████╔╝██║   ██║███████╗  ███╔╝ ███████║█████╔╝ 
-██║╚██╔╝██║██╔══██║██╔══██╗██║   ██║╚════██║ ███╔╝  ██╔══██║██╔═██╗ 
-██║ ╚═╝ ██║██║  ██║██║  ██║╚██████╔╝███████║███████╗██║  ██║██║  ██╗
-╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝
-        </div>
-        <div class="boot-text">
-            <div>MARUSZAK OPERATING SYSTEM v1.0</div>
-            <div>Copyright (C) 2025 Kamil Maruszak</div>
-            <div>&nbsp;</div>
-            <div>Loading system files.............[OK]</div>
-            <div>Initializing 3D graphics engine...[OK]</div>
-            <div>Starting computer vision modules..[OK]</div>
-            <div>Calibrating neural networks.......[OK]</div>
-            <div>&nbsp;</div>
-            <div class="progress-bar">
-                <div class="progress-fill"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 3D Canvas -->
     <canvas id="three-canvas"></canvas>
+    
+    <nav class="top-nav">
+        <div class="nav-container">
+            <a href="#" class="site-title" onclick="showPage('home'); return false;">K.MARUSZAK</a>
+            <ul class="nav-menu">
+                <li><a href="#" onclick="showPage('home'); return false;" class="active" data-page="home">HOME</a></li>
+                <li><a href="#" onclick="showPage('research'); return false;" data-page="research">RESEARCH</a></li>
+                <li><a href="#" onclick="showPage('blog'); return false;" data-page="blog">BLOG</a></li>
+                <li><a href="#" onclick="showPage('cv'); return false;" data-page="cv">CV</a></li>
+                <li><a href="#" onclick="showPage('contact'); return false;" data-page="contact">CONTACT</a></li>
+            </ul>
+        </div>
+    </nav>
 
-    <!-- Interaction Hint -->
-    <div class="interaction-hint" id="hint">
-        CLICK & DRAG<br>3D OBJECTS
+    <div id="home-page" class="page active">
+        <div class="container">
+            <div class="section">
+                <h1>KAMIL MARUSZAK</h1>
+                <p>Computer Graphics & 3D Vision Researcher | Research Intern at USTC | Co-founder @ MyndMap</p>
+                <p>I'm an upcoming research intern at USTC under Dr. Juyong Zhang. I recently graduated from the University of Hull with a first-class degree in Computer Science.</p>
+            </div>
+        </div>
     </div>
 
-    <div class="screen-container">
-        <!-- Header -->
-        <div class="terminal-header">
-            <div class="ascii-logo">
-╦╔═╔═╗╔╦╗╦╦    ╔╦╗╔═╗╦═╗╦ ╦╔═╗╔═╗╔═╗╦╔═
-╠╩╗╠═╣║║║║║    ║║║╠═╣╠╦╝║ ║╚═╗╔═╝╠═╣╠╩╗
-╩ ╩╩ ╩╩ ╩╩╩═╝  ╩ ╩╩ ╩╩╚═╚═╝╚═╝╚═╝╩ ╩╩ ╩
-            </div>
-            <div class="terminal-title">SYSTEM.RESEARCHER.EXE</div>
-            <div class="terminal-subtitle">» Computer Graphics & 3D Vision Specialist</div>
-            <div class="status-bar">
-                [ SYSTEM ONLINE ] | LOCATION: KINGSTON UPON HULL, UK | UPTIME: ∞
+    <div id="research-page" class="page">
+        <div class="container">
+            <div class="section">
+                <h1>RESEARCH</h1>
+                <h2>Current Projects</h2>
+                <p>Kolmogorov-Arnold Networks for 3D Object Representation - Exploring KANs for geometric data representation.</p>
             </div>
         </div>
+    </div>
 
-        <!-- News Ticker -->
-        <div class="ticker-window">
-            <span class="ticker-label">NEWS</span>
-            <div class="ticker-content">
-                [ MAY 2025 ] CO-FOUNDED MYNDMAP AS RESEARCH LEAD ░░░ [ FEB 2025 ] STARTED CV RESEARCH INTERNSHIP ░░░ [ SEP 2024 ] BECAME ML DEMONSTRATOR ░░░ [ JUL 2025 ] GRADUATED WITH FIRST CLASS HONOURS ░░░ [ MAY 2025 ] CO-FOUNDED MYNDMAP AS RESEARCH LEAD ░░░ [ FEB 2025 ] STARTED CV RESEARCH INTERNSHIP ░░░
-            </div>
-        </div>
-
-        <!-- Navigation -->
-        <div class="window nav-window">
-            <div class="window-titlebar">
-                <span>□ NAVIGATION.SYS</span>
-                <div class="window-buttons">
-                    <div class="window-btn">_</div>
-                    <div class="window-btn">□</div>
-                    <div class="window-btn">×</div>
-                </div>
-            </div>
-            <div class="nav-menu">
-                <a href="#home" class="nav-item active">HOME</a>
-                <a href="#research" class="nav-item">RESEARCH</a>
-                <a href="#experience" class="nav-item">EXPERIENCE</a>
-                <a href="#projects" class="nav-item">PROJECTS</a>
-                <a href="#contact" class="nav-item">CONTACT</a>
-            </div>
-        </div>
-
-        <!-- About Section -->
-        <div class="window" id="home">
-            <div class="window-titlebar">
-                <span>□ PROFILE.DAT</span>
-                <div class="window-buttons">
-                    <div class="window-btn">_</div>
-                    <div class="window-btn">□</div>
-                    <div class="window-btn">×</div>
-                </div>
-            </div>
-            <div class="window-content">
-                <div class="profile-grid">
-                    <div class="ascii-avatar">
-                        <img src="images/profile.jpg" alt="Kamil Maruszak" onerror="this.style.display='none'; this.parentNode.innerHTML='▓▓▓'">
-                    </div>
-                    <div>
-                        <h2>» PROFILE LOADED</h2>
-                        <table class="info-table">
-                            <tr>
-                                <td>NAME</td>
-                                <td>Kamil Maruszak</td>
-                            </tr>
-                            <tr>
-                                <td>STATUS</td>
-                                <td>Research Intern @ USTC</td>
-                            </tr>
-                            <tr>
-                                <td>SUPERVISOR</td>
-                                <td>Dr. Juyong Zhang</td>
-                            </tr>
-                            <tr>
-                                <td>EDUCATION</td>
-                                <td>B.Sc Computer Science (1st Class)</td>
-                            </tr>
-                            <tr>
-                                <td>INSTITUTION</td>
-                                <td>University of Hull</td>
-                            </tr>
-                            <tr>
-                                <td>ROLE</td>
-                                <td>Co-founder @ MyndMap</td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-
-                <h2>» SYSTEM.BIO</h2>
-                <p>
-                    I'm an upcoming research intern at <a href="https://en.ustc.edu.cn/">USTC</a> under <a href="https://juyong.github.io/index.html">Dr. Juyong Zhang</a>. I recently graduated from the University of Hull with a first-class degree in Computer Science and have a strong foundation in machine learning and 3D computer vision.
-                </p>
-                <p>
-                    As Co-founder of <a href="#">MyndMap</a>, an ADHD-focused productivity app, I currently lead research exploring computer vision and machine learning approaches to improve the daily lives of people with ADHD.
-                </p>
-                <p>
-                    My undergraduate dissertation, supervised by Dr. Qingde Li, focused on Kolmogorov-Arnold Networks (KANs) for 3D object representation, emphasizing efficiency and interpretability in point cloud classification.
-                </p>
-            </div>
-        </div>
-
-        <!-- Research Section -->
-        <div class="window" id="research">
-            <div class="window-titlebar">
-                <span>□ RESEARCH.SYS</span>
-                <div class="window-buttons">
-                    <div class="window-btn">_</div>
-                    <div class="window-btn">□</div>
-                    <div class="window-btn">×</div>
-                </div>
-            </div>
-            <div class="window-content">
-                <h2>» PRIMARY INTERESTS</h2>
-                <ul class="ascii-list">
-                    <li>3D Computer Vision</li>
-                    <li>Geometric Deep Learning</li>
-                    <li>Computer Graphics</li>
-                    <li>Neural Representations</li>
-                    <li>Point Cloud Processing</li>
-                </ul>
-
-                <div class="ascii-divider">
-                    ═══════════════════════════════════════════════════════
-                </div>
-
-                <h2>» TECHNICAL SKILLS</h2>
-                <div class="skills-grid">
-                    <div class="skill-box">
-                        <h4>LANGUAGES</h4>
-                        <span class="skill-tag">Python</span>
-                        <span class="skill-tag">C++</span>
-                        <span class="skill-tag">C#</span>
-                    </div>
-                    <div class="skill-box">
-                        <h4>FRAMEWORKS</h4>
-                        <span class="skill-tag">PyTorch</span>
-                        <span class="skill-tag">TensorFlow</span>
-                        <span class="skill-tag">scikit-learn</span>
-                    </div>
-                    <div class="skill-box">
-                        <h4>TOOLS</h4>
-                        <span class="skill-tag">Git</span>
-                        <span class="skill-tag">Flask</span>
-                        <span class="skill-tag">NumPy</span>
-                        <span class="skill-tag">Pandas</span>
-                    </div>
+    <div id="blog-page" class="page">
+        <div class="container">
+            <div class="section">
+                <h1>RESEARCH BLOG</h1>
+                <div class="blog-post">
+                    <div class="blog-meta">[2025-01-15] • RESEARCH NOTES</div>
+                    <div class="blog-title">Understanding Kolmogorov-Arnold Networks</div>
+                    <p>Kolmogorov-Arnold Networks (KANs) represent a fascinating departure from traditional neural networks...</p>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Experience Section -->
-        <div class="window" id="experience">
-            <div class="window-titlebar">
-                <span>□ EXPERIENCE.DAT</span>
-                <div class="window-buttons">
-                    <div class="window-btn">_</div>
-                    <div class="window-btn">□</div>
-                    <div class="window-btn">×</div>
-                </div>
-            </div>
-            <div class="window-content">
-                <h2>» WORK HISTORY</h2>
-
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">CO-FOUNDER & RESEARCH LEAD</div>
-                        <div class="card-subtitle">MyndMap | May 2025 - Present</div>
-                    </div>
-                    <ul class="ascii-list">
-                        <li>Co-founded AI-powered productivity app for individuals with ADHD</li>
-                        <li>Spearheading AI research in computer vision and machine learning</li>
-                        <li>Defining technical roadmap for AI-driven features</li>
-                        <li>Leading implementation of behavior pattern recognition algorithms</li>
-                        <li>Collaborating on product design and UX for target audience</li>
-                    </ul>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">MACHINE LEARNING DEMONSTRATOR</div>
-                        <div class="card-subtitle">University of Hull | Sep 2024 - Present</div>
-                    </div>
-                    <ul class="ascii-list">
-                        <li>Delivered interactive ML workshops for students</li>
-                        <li>Provided one-on-one guidance on Python and ML concepts</li>
-                        <li>Assisted with troubleshooting coding challenges</li>
-                        <li>Offered constructive feedback on student projects</li>
-                    </ul>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">COMPUTER VISION RESEARCH INTERN</div>
-                        <div class="card-subtitle">MyndMap | Feb 2025 - Apr 2025</div>
-                    </div>
-                    <ul class="ascii-list">
-                        <li>Conducted systematic literature review on ADHD interventions</li>
-                        <li>Developed comparative analysis framework for CV approaches</li>
-                        <li>Analyzed existing ADHD productivity applications</li>
-                        <li>Investigated resource-efficient ML models for mobile deployment</li>
-                        <li>Conducted market research and identified growth opportunities</li>
-                    </ul>
-                </div>
+    <div id="cv-page" class="page">
+        <div class="container">
+            <div class="section">
+                <h1>CURRICULUM VITAE</h1>
+                <h2>Education</h2>
+                <p>B.Sc Computer Science, First Class Honours - University of Hull (2021-2025)</p>
             </div>
         </div>
+    </div>
 
-        <!-- Projects Section -->
-        <div class="window" id="projects">
-            <div class="window-titlebar">
-                <span>□ PROJECTS.EXE</span>
-                <div class="window-buttons">
-                    <div class="window-btn">_</div>
-                    <div class="window-btn">□</div>
-                    <div class="window-btn">×</div>
-                </div>
-            </div>
-            <div class="window-content">
-                <h2>» FEATURED PROJECTS</h2>
-
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">KOLMOGOROV-ARNOLD NETWORKS FOR 3D OBJECT REPRESENTATION</div>
-                        <div class="card-subtitle">Honours Stage Project | Summer 2024 - Present</div>
-                    </div>
-                    <p>
-                        Exploring KANs to model complex 3D topological features for geometric data representation.
-                    </p>
-                    <ul class="ascii-list">
-                        <li>Conducted comprehensive literature review on KANs and PointNet</li>
-                        <li>Acquired technical understanding of neural 3D representations</li>
-                        <li>Integrated KANs with 3D datasets using Python and PyTorch</li>
-                        <li>Designed framework for improved feature extraction</li>
-                        <li>Benchmarked against traditional MLPs for accuracy and scalability</li>
-                    </ul>
-                </div>
-
-                <div class="ascii-divider">
-                    ═══════════════════════════════════════════════════════
-                </div>
-
-                <h3>» HOBBIES & INTERESTS</h3>
-
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">BASKETBALL</div>
-                    </div>
-                    <p>
-                        Passionate about basketball, both playing and following professional leagues. The sport has taught me teamwork, strategic thinking, and continuous practice—skills that translate to technical work.
-                    </p>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">GAME DEVELOPMENT</div>
-                    </div>
-                    <p>
-                        Creating interactive experiences and experimenting with game mechanics. Combines programming with creative problem-solving, exploring computer graphics and UX design.
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Contact Section -->
-        <div class="window" id="contact">
-            <div class="window-titlebar">
-                <span>□ CONTACT.INI</span>
-                <div class="window-buttons">
-                    <div class="window-btn">_</div>
-                    <div class="window-btn">□</div>
-                    <div class="window-btn">×</div>
-                </div>
-            </div>
-            <div class="window-content">
-                <h2>» CONNECT</h2>
-                <div class="contact-grid">
-                    <div class="contact-box">
-                        <div class="contact-label">EMAIL</div>
-                        <div class="contact-value">
-                            <a href="mailto:maruszakkamil1@gmail.com">maruszakkamil1@gmail.com</a>
-                        </div>
-                    </div>
-                    <div class="contact-box">
-                        <div class="contact-label">PHONE</div>
-                        <div class="contact-value">
-                            <a href="tel:07849500805">07849 500 805</a>
-                        </div>
-                    </div>
-                    <div class="contact-box">
-                        <div class="contact-label">LOCATION</div>
-                        <div class="contact-value">
-                            Kingston Upon Hull, UK
-                        </div>
-                    </div>
-                    <div class="contact-box">
-                        <div class="contact-label">LINKEDIN</div>
-                        <div class="contact-value">
-                            <a href="https://www.linkedin.com/in/kamil-maruszak-4234821a9" target="_blank">@kamil-maruszak</a>
-                        </div>
-                    </div>
-                    <div class="contact-box">
-                        <div class="contact-label">PORTFOLIO</div>
-                        <div class="contact-value">
-                            <a href="https://donkamilo00.github.io/" target="_blank">donkamilo00.github.io</a>
-                        </div>
-                    </div>
-                    <div class="contact-box">
-                        <div class="contact-label">GITHUB</div>
-                        <div class="contact-value">
-                            <a href="https://github.com/donkamilo00" target="_blank">github.com/donkamilo00</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="ascii-divider" style="margin-top: 40px;">
-                    ═══════════════════════════════════════════════════════
-                </div>
-
-                <div style="text-align: center; margin-top: 30px;">
-                    <img src="myndmap_logo.png" alt="MyndMap Logo" style="max-width: 300px; width: 100%; height: auto; border: 3px solid var(--fg-white); padding: 20px; filter: grayscale(1) contrast(1.2);">
-                </div>
-            </div>
-        </div>
-
-        <!-- Footer -->
-        <div class="footer">
-            <div style="font-family: 'Press Start 2P', monospace; font-size: 10px; margin-bottom: 15px;">
-                MARUSZAK.SYS © 2025
-            </div>
-            <div class="footer-ascii">
-┌──────────────────────────────────────────────────────┐
-│ SYSTEM READY | MEMORY: OK | GRAPHICS: OK | VISION: OK │
-└──────────────────────────────────────────────────────┘
+    <div id="contact-page" class="page">
+        <div class="container">
+            <div class="section">
+                <h1>CONTACT</h1>
+                <p>Email: <a href="mailto:maruszakkamil1@gmail.com">maruszakkamil1@gmail.com</a></p>
+                <p>LinkedIn: <a href="https://www.linkedin.com/in/kamil-maruszak-4234821a9">@kamil-maruszak</a></p>
             </div>
         </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
-        // Boot sequence
-        setTimeout(() => {
-            document.getElementById('bootScreen').classList.add('hidden');
-            setTimeout(() => {
-                document.getElementById('bootScreen').style.display = 'none';
-            }, 500);
-        }, 3500);
+        function showPage(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(page + '-page').classList.add('active');
+            document.querySelectorAll('.nav-menu a').forEach(a => {
+                a.classList.remove('active');
+                if (a.getAttribute('data-page') === page) a.classList.add('active');
+            });
+            window.scrollTo(0, 0);
+        }
 
-        // Hide hint after 5 seconds
-        setTimeout(() => {
-            const hint = document.getElementById('hint');
-            if (hint) {
-                hint.style.opacity = '0';
-                setTimeout(() => hint.style.display = 'none', 500);
-            }
-        }, 5000);
-
-        // Three.js Scene Setup
+        // Three.js
         const canvas = document.getElementById('three-canvas');
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-        
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setClearColor(0x000000, 0);
         camera.position.z = 15;
 
-        // Lighting
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-        scene.add(ambientLight);
-        
-        const pointLight = new THREE.PointLight(0xffffff, 1);
-        pointLight.position.set(10, 10, 10);
-        scene.add(pointLight);
-
-        // Create interactive 3D objects
         const geometries = [
             new THREE.BoxGeometry(2, 2, 2),
             new THREE.SphereGeometry(1.2, 16, 16),
-            new THREE.ConeGeometry(1, 2, 8),
-            new THREE.TorusGeometry(1, 0.4, 8, 12),
             new THREE.OctahedronGeometry(1.5),
-            new THREE.TetrahedronGeometry(1.5),
-            new THREE.IcosahedronGeometry(1.3),
-            new THREE.DodecahedronGeometry(1.3)
+            new THREE.TetrahedronGeometry(1.5)
         ];
-
-        const material = new THREE.MeshStandardMaterial({
-            color: 0xffffff,
-            wireframe: true,
-            transparent: true,
-            opacity: 0.8
-        });
 
         const meshes = [];
-        const positions = [
-            { x: -8, y: 4, z: -5 },
-            { x: 8, y: 4, z: -5 },
-            { x: -8, y: -4, z: -5 },
-            { x: 8, y: -4, z: -5 },
-            { x: 0, y: 6, z: -8 },
-            { x: -6, y: 0, z: -3 },
-            { x: 6, y: 0, z: -3 },
-            { x: 0, y: -6, z: -8 }
-        ];
+        const positions = [{x:-8,y:4,z:-5}, {x:8,y:4,z:-5}, {x:-8,y:-4,z:-5}, {x:8,y:-4,z:-5}];
 
-        geometries.forEach((geometry, index) => {
-            const mesh = new THREE.Mesh(geometry, material.clone());
-            mesh.position.set(
-                positions[index].x,
-                positions[index].y,
-                positions[index].z
-            );
-            mesh.userData = {
-                rotationSpeed: {
-                    x: (Math.random() - 0.5) * 0.02,
-                    y: (Math.random() - 0.5) * 0.02,
-                    z: (Math.random() - 0.5) * 0.02
-                },
-                originalPosition: mesh.position.clone()
-            };
+        geometries.forEach((geo, i) => {
+            const mesh = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({
+                color: 0xffffff,
+                wireframe: true,
+                transparent: true,
+                opacity: 0.6
+            }));
+            mesh.position.set(positions[i].x, positions[i].y, positions[i].z);
             meshes.push(mesh);
             scene.add(mesh);
         });
 
-        // Raycaster for mouse interaction
-        const raycaster = new THREE.Raycaster();
-        const mouse = new THREE.Vector2();
-        let selectedObject = null;
-        let isDragging = false;
-        const dragPlane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
-        const offset = new THREE.Vector3();
-        const intersection = new THREE.Vector3();
+        scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+        const light = new THREE.PointLight(0xffffff, 1);
+        light.position.set(10, 10, 10);
+        scene.add(light);
 
-        // Mouse events
-        function onMouseMove(event) {
-            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-            raycaster.setFromCamera(mouse, camera);
-
-            if (isDragging && selectedObject) {
-                raycaster.ray.intersectPlane(dragPlane, intersection);
-                selectedObject.position.copy(intersection.sub(offset));
-            } else {
-                const intersects = raycaster.intersectObjects(meshes);
-                
-                // Reset all opacities
-                meshes.forEach(mesh => {
-                    mesh.material.opacity = 0.8;
-                });
-                
-                if (intersects.length > 0) {
-                    canvas.style.cursor = 'pointer';
-                    intersects[0].object.material.opacity = 1;
-                } else {
-                    canvas.style.cursor = 'default';
-                }
-            }
-        }
-
-        function onMouseDown(event) {
-            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-            raycaster.setFromCamera(mouse, camera);
-            const intersects = raycaster.intersectObjects(meshes);
-
-            if (intersects.length > 0) {
-                selectedObject = intersects[0].object;
-                isDragging = true;
-                
-                canvas.style.cursor = 'grabbing';
-                
-                // Calculate offset
-                raycaster.ray.intersectPlane(dragPlane, intersection);
-                offset.copy(intersection).sub(selectedObject.position);
-            }
-        }
-
-        function onMouseUp() {
-            if (selectedObject) {
-                selectedObject.material.opacity = 0.8;
-            }
-            isDragging = false;
-            selectedObject = null;
-            canvas.style.cursor = 'default';
-        }
-
-        canvas.addEventListener('mousemove', onMouseMove);
-        canvas.addEventListener('mousedown', onMouseDown);
-        canvas.addEventListener('mouseup', onMouseUp);
-
-        // Touch events for mobile
-        function getTouchPos(event) {
-            const touch = event.touches[0] || event.changedTouches[0];
-            return {
-                x: (touch.clientX / window.innerWidth) * 2 - 1,
-                y: -(touch.clientY / window.innerHeight) * 2 + 1
-            };
-        }
-
-        canvas.addEventListener('touchstart', (event) => {
-            event.preventDefault();
-            const pos = getTouchPos(event);
-            mouse.x = pos.x;
-            mouse.y = pos.y;
-            
-            raycaster.setFromCamera(mouse, camera);
-            const intersects = raycaster.intersectObjects(meshes);
-            
-            if (intersects.length > 0) {
-                selectedObject = intersects[0].object;
-                isDragging = true;
-                raycaster.ray.intersectPlane(dragPlane, intersection);
-                offset.copy(intersection).sub(selectedObject.position);
-            }
-        });
-
-        canvas.addEventListener('touchmove', (event) => {
-            event.preventDefault();
-            if (isDragging && selectedObject) {
-                const pos = getTouchPos(event);
-                mouse.x = pos.x;
-                mouse.y = pos.y;
-                raycaster.setFromCamera(mouse, camera);
-                raycaster.ray.intersectPlane(dragPlane, intersection);
-                selectedObject.position.copy(intersection.sub(offset));
-            }
-        });
-
-        canvas.addEventListener('touchend', () => {
-            isDragging = false;
-            selectedObject = null;
-        });
-
-        // Animation loop
         function animate() {
             requestAnimationFrame(animate);
-
-            meshes.forEach(mesh => {
-                if (!isDragging || mesh !== selectedObject) {
-                    mesh.rotation.x += mesh.userData.rotationSpeed.x;
-                    mesh.rotation.y += mesh.userData.rotationSpeed.y;
-                    mesh.rotation.z += mesh.userData.rotationSpeed.z;
-                }
-            });
-
+            meshes.forEach(m => { m.rotation.x += 0.01; m.rotation.y += 0.01; });
             renderer.render(scene, camera);
         }
         animate();
 
-        // Window resize
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
-
-        // Navigation
-        document.querySelectorAll('.nav-item').forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                document.querySelectorAll('.nav-item').forEach(item => {
-                    item.classList.remove('active');
-                });
-                
-                this.classList.add('active');
-                
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
-
-        // Random glitch effect
-        setInterval(() => {
-            const elements = document.querySelectorAll('.card-title');
-            if (elements.length > 0) {
-                const randomElement = elements[Math.floor(Math.random() * elements.length)];
-                randomElement.style.animation = 'textGlitch 0.3s';
-                setTimeout(() => {
-                    randomElement.style.animation = '';
-                }, 300);
-            }
-        }, 8000);
     </script>
 </body>
 </html>
