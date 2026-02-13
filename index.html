@@ -14,6 +14,7 @@
             --gray: #808080;
             --light-gray: #ccc;
             --dark-gray: #333;
+            --terminal-green: #00ff00;
         }
         
         body {
@@ -104,7 +105,7 @@
         
         /* Container */
         .container {
-            max-width: 1400px;
+            max-width: 1200px; /* Tightened slightly for better readability */
             margin: 0 auto;
             padding: 40px 30px;
             position: relative;
@@ -116,7 +117,7 @@
             border: 3px solid var(--white);
             padding: 30px;
             margin-bottom: 30px;
-            background: var(--black);
+            background: rgba(0, 0, 0, 0.85); /* Slight transparency to let 3D show */
             box-shadow: 4px 4px 0 var(--dark-gray);
         }
         
@@ -132,22 +133,54 @@
             font-family: 'Press Start 2P', monospace;
             font-size: 14px;
             margin: 25px 0 15px 0;
+            color: var(--light-gray);
+        }
+
+        .section h3 {
+            font-size: 16px;
+            margin: 20px 0 5px 0;
+            text-transform: uppercase;
         }
         
-        .section p {
+        .section p, .section ul {
             margin-bottom: 15px;
             font-size: 15px;
+        }
+
+        .section ul {
+            padding-left: 20px;
+            list-style-type: square;
+        }
+
+        .section li {
+            margin-bottom: 8px;
         }
         
         .section a {
             color: var(--white);
-            border-bottom: 1px solid var(--white);
+            border-bottom: 1px dashed var(--white);
             text-decoration: none;
+            transition: all 0.2s;
         }
         
         .section a:hover {
             background: var(--white);
             color: var(--black);
+        }
+
+        /* Grid Layouts to fill space better */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .status-bar {
+            background: var(--dark-gray);
+            padding: 10px 15px;
+            font-size: 12px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--white);
         }
         
         /* Blog Post */
@@ -156,6 +189,11 @@
             padding: 25px;
             margin-bottom: 25px;
             background: var(--black);
+            transition: transform 0.2s;
+        }
+
+        .blog-post:hover {
+            transform: translateX(5px);
         }
         
         .blog-meta {
@@ -170,15 +208,30 @@
             font-size: 15px;
             margin-bottom: 15px;
         }
+
+        /* Tags for skills */
+        .tag {
+            display: inline-block;
+            border: 1px solid var(--white);
+            padding: 5px 10px;
+            margin: 0 5px 10px 0;
+            font-size: 13px;
+        }
         
         .page { display: none; }
-        .page.active { display: block; }
+        .page.active { display: block; animation: fadeIn 0.3s ease-in; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
         
         @media (max-width: 768px) {
             .nav-container { flex-direction: column; }
             .site-title { border-right: none; border-bottom: 2px solid var(--gray); width: 100%; text-align: center; }
             .nav-menu { flex-direction: column; width: 100%; }
             .nav-menu a { border-right: none; border-bottom: 2px solid var(--gray); }
+            .grid-2 { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -202,8 +255,25 @@
         <div class="container">
             <div class="section">
                 <h1>KAMIL MARUSZAK</h1>
-                <p>Computer Graphics & 3D Vision Researcher | Research Intern at USTC | Co-founder @ MyndMap</p>
-                <p>I'm an upcoming research intern at USTC under Dr. Juyong Zhang. I recently graduated from the University of Hull with a first-class degree in Computer Science.</p>
+                <div class="status-bar">
+                    >> SYSTEM.RESEARCHER.EXE | STATUS: [ONLINE] | LOCATION: Kingston Upon Hull, UK
+                </div>
+                <p><strong>Computer Graphics & 3D Vision Researcher | Research Intern at USTC | Co-founder @ MyndMap</strong></p>
+                <br>
+                <p>I'm an upcoming research intern at USTC under Dr. Juyong Zhang. I recently graduated from the University of Hull with a first-class degree in Computer Science and have a strong foundation in machine learning and 3D computer vision.</p>
+                <p>As Co-founder of <a href="#">MyndMap</a>, an ADHD-focused productivity app, I currently lead research exploring computer vision and machine learning approaches to improve the daily lives of people with ADHD.</p>
+            </div>
+
+            <div class="grid-2">
+                <div class="section">
+                    <h2>SYSTEM.BIO</h2>
+                    <p>My undergraduate dissertation, supervised by Dr. Qingde Li, focused on Kolmogorov-Arnold Networks (KANs) for 3D object representation, emphasizing efficiency and interpretability in point cloud classification.</p>
+                </div>
+                <div class="section">
+                    <h2>HOBBIES.EXE</h2>
+                    <p><strong>Basketball:</strong> Passionate about playing and following professional leagues. It teaches teamwork and strategic thinking.</p>
+                    <p><strong>Game Development:</strong> Creating interactive experiences and experimenting with game mechanics, computer graphics, and UX design.</p>
+                </div>
             </div>
         </div>
     </div>
@@ -212,8 +282,29 @@
         <div class="container">
             <div class="section">
                 <h1>RESEARCH</h1>
-                <h2>Current Projects</h2>
-                <p>Kolmogorov-Arnold Networks for 3D Object Representation - Exploring KANs for geometric data representation.</p>
+                
+                <div class="grid-2">
+                    <div>
+                        <h2>PRIMARY INTERESTS</h2>
+                        <ul>
+                            <li>3D Computer Vision</li>
+                            <li>Geometric Deep Learning</li>
+                            <li>Computer Graphics</li>
+                            <li>Neural Representations</li>
+                            <li>Point Cloud Processing</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h2>FEATURED PROJECT</h2>
+                        <h3>Kolmogorov-Arnold Networks for 3D Object Representation</h3>
+                        <p><em>Honours Stage Project | Summer 2024 - Present</em></p>
+                        <ul>
+                            <li>Exploring KANs to model complex 3D topological features for geometric data representation.</li>
+                            <li>Integrated KANs with 3D datasets using Python and PyTorch.</li>
+                            <li>Designed framework for improved feature extraction and benchmarked against traditional MLPs.</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -225,7 +316,8 @@
                 <div class="blog-post">
                     <div class="blog-meta">[2025-01-15] • RESEARCH NOTES</div>
                     <div class="blog-title">Understanding Kolmogorov-Arnold Networks</div>
-                    <p>Kolmogorov-Arnold Networks (KANs) represent a fascinating departure from traditional neural networks...</p>
+                    <p>Kolmogorov-Arnold Networks (KANs) represent a fascinating departure from traditional neural networks. By placing activation functions on edges rather than nodes, they offer unique advantages in interpretability and scaling...</p>
+                    <a href="#">READ MORE >></a>
                 </div>
             </div>
         </div>
@@ -234,19 +326,66 @@
     <div id="cv-page" class="page">
         <div class="container">
             <div class="section">
-                <h1>CURRICULUM VITAE</h1>
-                <h2>Education</h2>
-                <p>B.Sc Computer Science, First Class Honours - University of Hull (2021-2025)</p>
+                <h1>EXPERIENCE.DAT</h1>
+                
+                <h2>Work History</h2>
+                <h3>Co-Founder & Research Lead | MyndMap</h3>
+                <p><em>May 2025 - Present</em></p>
+                <ul>
+                    <li>Spearheading AI research in computer vision and machine learning for an ADHD-focused app.</li>
+                    <li>Defining technical roadmap for AI-driven features and behavior pattern recognition.</li>
+                </ul>
+
+                <h3>Computer Vision Research Intern | MyndMap</h3>
+                <p><em>Feb 2025 - Apr 2025</em></p>
+                <ul>
+                    <li>Conducted systematic literature reviews and developed comparative analysis frameworks for CV approaches in ADHD interventions.</li>
+                    <li>Investigated resource-efficient ML models for mobile deployment.</li>
+                </ul>
+
+                <h3>Machine Learning Demonstrator | University of Hull</h3>
+                <p><em>Sep 2024 - Present</em></p>
+                <ul>
+                    <li>Delivered interactive ML workshops and provided one-on-one Python/ML guidance.</li>
+                </ul>
+            </div>
+
+            <div class="grid-2">
+                <div class="section">
+                    <h2>Education</h2>
+                    <p><strong>B.Sc Computer Science (1st Class)</strong><br>University of Hull | Graduated Jul 2025</p>
+                </div>
+                <div class="section">
+                    <h2>Technical Skills</h2>
+                    <p>
+                        <span class="tag">Python</span>
+                        <span class="tag">C++</span>
+                        <span class="tag">C#</span>
+                        <span class="tag">PyTorch</span>
+                        <span class="tag">TensorFlow</span>
+                        <span class="tag">scikit-learn</span>
+                        <span class="tag">Git</span>
+                        <span class="tag">Flask</span>
+                        <span class="tag">NumPy</span>
+                    </p>
+                </div>
             </div>
         </div>
     </div>
 
     <div id="contact-page" class="page">
         <div class="container">
-            <div class="section">
-                <h1>CONTACT</h1>
-                <p>Email: <a href="mailto:maruszakkamil1@gmail.com">maruszakkamil1@gmail.com</a></p>
-                <p>LinkedIn: <a href="https://www.linkedin.com/in/kamil-maruszak-4234821a9">@kamil-maruszak</a></p>
+            <div class="section" style="text-align: center;">
+                <h1>CONNECT.INI</h1>
+                <p>Currently based in Kingston Upon Hull, UK.</p>
+                <br>
+                <div style="font-size: 18px; line-height: 2;">
+                    <p>Email: <a href="mailto:maruszakkamil1@gmail.com">maruszakkamil1@gmail.com</a></p>
+                    <p>Phone: 07849 500 805</p>
+                    <p>LinkedIn: <a href="https://linkedin.com/in/kamil-maruszak" target="_blank">@kamil-maruszak</a></p>
+                    <p>GitHub: <a href="https://github.com/donkamilo00" target="_blank">donkamilo00</a></p>
+                    <p>Portfolio: <a href="https://donkamilo00.github.io" target="_blank">donkamilo00.github.io</a></p>
+                </div>
             </div>
         </div>
     </div>
@@ -263,7 +402,7 @@
             window.scrollTo(0, 0);
         }
 
-        // Three.js
+        // Three.js Background
         const canvas = document.getElementById('three-canvas');
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
