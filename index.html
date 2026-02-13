@@ -115,7 +115,7 @@
             pointer-events: none; 
         }
 
-        .section, .status-bar, .blog-post, .project-card, .cg-toy-container {
+        .section, .status-bar, .blog-post, .project-card, .cg-toy-wrapper {
             pointer-events: auto;
         }
         
@@ -219,16 +219,16 @@
             font-family: 'Press Start 2P', monospace;
         }
 
-        /* Interactive CG Toy Container */
-        .cg-toy-container {
-            width: 100%;
-            height: 400px;
+        /* Interactive CG Toy Wrapper & Controls */
+        .cg-toy-wrapper {
+            margin-top: 20px;
             border: 2px solid var(--terminal-green);
             background: #050505;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-top: 20px;
+        }
+
+        .cg-toy-container {
+            width: 100%;
+            height: 350px;
             position: relative;
             overflow: hidden;
             cursor: crosshair;
@@ -245,6 +245,48 @@
             opacity: 0.7;
             z-index: 5;
             pointer-events: none;
+        }
+
+        .toy-controls {
+            border-top: 1px dashed var(--terminal-green);
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            background: rgba(0, 255, 0, 0.02);
+        }
+
+        .control-group label {
+            display: flex;
+            justify-content: space-between;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 9px;
+            color: var(--terminal-green);
+            margin-bottom: 8px;
+        }
+
+        /* Custom Slider Styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]:focus {
+            outline: none;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 14px;
+            width: 10px;
+            background: var(--terminal-green);
+            cursor: pointer;
+            margin-top: -6px;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 2px;
+            cursor: pointer;
+            background: var(--gray);
         }
 
         /* Blog Post */
@@ -296,6 +338,7 @@
             .nav-menu { flex-direction: column; width: 100%; }
             .nav-menu a { border-right: none; border-bottom: 2px solid var(--gray); }
             .grid-2 { grid-template-columns: 1fr; }
+            .toy-controls { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -400,10 +443,31 @@
                 </div>
 
                 <h2>INTERACTIVE CG TOYS</h2>
-                <p>Real-time Signed Distance Field (SDF) rendered using a WebGL fragment shader via sphere tracing. Move your mouse over the canvas to shift the camera angles.</p>
+                <p>Real-time Signed Distance Field (SDF) rendered using a WebGL fragment shader via sphere tracing. Move your mouse over the canvas to shift the camera angles, and use the terminal sliders to adjust the math parameters.</p>
                 
-                <div class="cg-toy-container" id="toy-container-1">
+                <div class="cg-toy-wrapper">
+                    <div class="cg-toy-container" id="toy-container-1">
+                        </div>
+                    
+                    <div class="toy-controls">
+                        <div class="control-group">
+                            <label>TOPOLOGY_FREQ <span id="val-freq">3.0</span></label>
+                            <input type="range" id="ctrl-freq" min="0.0" max="10.0" step="0.1" value="3.0">
+                        </div>
+                        <div class="control-group">
+                            <label>MORPH_AMPLITUDE <span id="val-amp">0.3</span></label>
+                            <input type="range" id="ctrl-amp" min="0.0" max="1.5" step="0.05" value="0.3">
+                        </div>
+                        <div class="control-group">
+                            <label>TIME_DILATION <span id="val-speed">1.0</span></label>
+                            <input type="range" id="ctrl-speed" min="0.0" max="3.0" step="0.1" value="1.0">
+                        </div>
+                        <div class="control-group">
+                            <label>RENDER_GLOW <span id="val-glow">1.5</span></label>
+                            <input type="range" id="ctrl-glow" min="0.0" max="4.0" step="0.1" value="1.5">
+                        </div>
                     </div>
+                </div>
                 <p style="font-size: 12px; color: var(--gray); text-align: right; margin-top: 5px;"><em>Experiment 01: Procedural Implicit Surface Raymarcher</em></p>
 
             </div>
@@ -616,16 +680,13 @@
         // ==========================================
         const toyContainer = document.getElementById('toy-container-1');
         const toyScene = new THREE.Scene();
-        // Orthographic camera because we are rendering onto a 2D plane using a fragment shader
         const toyCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
         const toyRenderer = new THREE.WebGLRenderer({ antialias: false });
         
-        // Match renderer to container size
         const resizeToy = () => {
             const width = toyContainer.clientWidth;
             const height = toyContainer.clientHeight;
             toyRenderer.setSize(width, height);
-            // Update shader resolution uniform later in loop
         };
         toyContainer.appendChild(toyRenderer.domElement);
         resizeToy();
@@ -637,28 +698,30 @@
             uniform float u_time;
             uniform vec2 u_resolution;
             uniform vec2 u_mouse;
+            
+            // New dynamic uniforms linked to HTML sliders
+            uniform float u_freq;
+            uniform float u_amp;
+            uniform float u_speed;
+            uniform float u_glow;
 
-            // Rotation matrix
             mat2 rot(float a) {
                 float s = sin(a), c = cos(a);
                 return mat2(c, -s, s, c);
             }
 
-            // The Distance Function
             float map(vec3 p) {
-                // Base sphere
                 float sphere = length(p) - 1.2;
                 
-                // Add high-frequency trigonometric noise to simulate a neural implicit surface
-                float noise = sin(p.x * 3.0 + u_time * 1.5) * sin(p.y * 3.0 + u_time * 1.2) * sin(p.z * 3.0 + u_time) * 0.3;
+                // Noise driven by the HTML sliders
+                float t = u_time * u_speed;
+                float noise = sin(p.x * u_freq + t * 1.5) * sin(p.y * u_freq + t * 1.2) * sin(p.z * u_freq + t) * u_amp;
                 
-                // Add a secondary pulsing layer
-                float pulse = sin(length(p) * 8.0 - u_time * 3.0) * 0.05;
+                float pulse = sin(length(p) * 8.0 - t * 3.0) * 0.05;
 
                 return sphere + noise + pulse;
             }
 
-            // Compute Normals (Gradients)
             vec3 getNormal(vec3 p) {
                 vec2 e = vec2(0.01, 0.0);
                 return normalize(vec3(
@@ -669,20 +732,16 @@
             }
 
             void main() {
-                // Normalize pixel coordinates (from -1 to 1)
                 vec2 uv = (gl_FragCoord.xy * 2.0 - u_resolution.xy) / u_resolution.y;
 
-                // Ray setup
-                vec3 ro = vec3(0.0, 0.0, 3.0); // Ray Origin (Camera)
-                vec3 rd = normalize(vec3(uv, -1.5)); // Ray Direction
+                vec3 ro = vec3(0.0, 0.0, 3.0); 
+                vec3 rd = normalize(vec3(uv, -1.5)); 
 
-                // Rotate camera based on mouse
                 ro.yz *= rot(-u_mouse.y * 1.5);
                 rd.yz *= rot(-u_mouse.y * 1.5);
                 ro.xz *= rot(u_mouse.x * 1.5);
                 rd.xz *= rot(u_mouse.x * 1.5);
 
-                // Sphere Tracing Loop
                 float t = 0.0;
                 float max_d = 100.0;
                 int i = 0;
@@ -693,27 +752,23 @@
                     if(d < 0.001 || t > max_d) break;
                 }
 
-                // Shading
-                vec3 col = vec3(0.0); // Black background
+                vec3 col = vec3(0.0); 
                 
                 if(t < max_d) {
                     vec3 p = ro + rd * t;
                     vec3 n = getNormal(p);
                     vec3 light = normalize(vec3(1.0, 1.0, 1.0));
                     
-                    // Diffuse lighting
                     float dif = max(dot(n, light), 0.0);
                     
-                    // Cyberpunk color palette
                     vec3 baseColor = vec3(0.0, 0.15, 0.0);
                     vec3 highlight = vec3(0.0, 1.0, 0.0);
                     
-                    // Fresnel / Rim Lighting (glow on the edges)
                     float rim = 1.0 - max(dot(n, -rd), 0.0);
                     rim = smoothstep(0.5, 1.0, rim);
                     
-                    // Combine colors
-                    col = baseColor + (dif * highlight * 0.4) + (rim * highlight * 1.5);
+                    // Multiply rim highlight by slider value
+                    col = baseColor + (dif * highlight * 0.4) + (rim * highlight * u_glow);
                 }
 
                 gl_FragColor = vec4(col, 1.0);
@@ -721,26 +776,47 @@
         `;
 
         const toyMaterial = new THREE.ShaderMaterial({
-            vertexShader: `void main() { gl_Position = vec4(position, 1.0); }`, // simple pass-through
+            vertexShader: `void main() { gl_Position = vec4(position, 1.0); }`, 
             fragmentShader: sdfFragmentShader,
             uniforms: {
                 u_time: { value: 0 },
                 u_resolution: { value: new THREE.Vector2() },
-                u_mouse: { value: new THREE.Vector2() }
+                u_mouse: { value: new THREE.Vector2() },
+                u_freq: { value: 3.0 },
+                u_amp: { value: 0.3 },
+                u_speed: { value: 1.0 },
+                u_glow: { value: 1.5 }
             }
         });
 
-        // Add plane that fills the orthographic camera bounds
         const toyPlane = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), toyMaterial);
         toyScene.add(toyPlane);
 
-        // Update Toy Mouse
+        // Mouse for Raymarcher Camera
         toyContainer.addEventListener('mousemove', (e) => {
             const rect = toyContainer.getBoundingClientRect();
-            // Normalize to -1 to 1 based on container size
             toyMouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
             toyMouse.y = ((e.clientY - rect.top) / rect.height) * 2 - 1;
         });
+
+        // ==========================================
+        // LINK HTML SLIDERS TO SHADER UNIFORMS
+        // ==========================================
+        const bindSlider = (id, uniformKey, displayId) => {
+            const slider = document.getElementById(id);
+            const display = document.getElementById(displayId);
+            slider.addEventListener('input', (e) => {
+                const val = parseFloat(e.target.value);
+                toyMaterial.uniforms[uniformKey].value = val;
+                // Keep 1 decimal place for the terminal aesthetic
+                display.innerText = val.toFixed(1);
+            });
+        };
+
+        bindSlider('ctrl-freq', 'u_freq', 'val-freq');
+        bindSlider('ctrl-amp', 'u_amp', 'val-amp');
+        bindSlider('ctrl-speed', 'u_speed', 'val-speed');
+        bindSlider('ctrl-glow', 'u_glow', 'val-glow');
 
 
         // ==========================================
@@ -859,11 +935,9 @@
             bgRenderer.render(bgScene, bgCamera);
 
             // 3. Render Toy Raymarcher
-            // Only update if the projects page is active to save performance
             if (document.getElementById('projects-page').classList.contains('active')) {
                 toyMaterial.uniforms.u_time.value = clock.getElapsedTime();
                 toyMaterial.uniforms.u_resolution.value.set(toyContainer.clientWidth, toyContainer.clientHeight);
-                // Smoothly interpolate mouse for the shader
                 toyMaterial.uniforms.u_mouse.value.lerp(toyMouse, 0.05);
                 toyRenderer.render(toyScene, toyCamera);
             }
