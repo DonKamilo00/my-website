@@ -567,6 +567,8 @@
                 if (a.getAttribute('data-page') === page) a.classList.add('active');
             });
             window.scrollTo(0, 0);
+
+            window.dispatchEvent(new Event('resize'));
         }
 
         // ==========================================
